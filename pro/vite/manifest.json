@@ -1,0 +1,13 @@
+{
+  "src/ai/style.scss": {
+    "file": "pro-style.css",
+    "src": "src/ai/style.scss",
+    "isEntry": true
+  },
+  "src/index.tsx": {
+    "file": "assets/pro-B3yvWKZR.js",
+    "name": "pro",
+    "src": "src/index.tsx",
+    "isEntry": true
+  }
+}

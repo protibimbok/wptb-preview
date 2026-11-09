@@ -8,11 +8,11 @@ The editor normally runs inside wp-admin. Here it runs on a static page with no 
 
 ## What works
 
-- The drag-and-drop builder, opened on a sample table
-- The table list, the "Add New" page and the free template
+- The drag-and-drop builder with the Pro add-on enabled, opened on an "Element showcase" table that uses all fourteen element types
+- A second sample table, the table list, the "Add New" page and every bundled template
 - Saving, duplicating, trashing and restoring, all simulated in memory
 
-Nothing leaves your browser and nothing is stored. Reloading the page starts again from the sample table. Features that need a WordPress site (media library, live front-end preview, export, settings) are not available.
+Nothing leaves your browser and nothing is stored. Reloading the page starts again from the sample tables. Features that need a WordPress site (media library, live front-end preview, export, settings, the AI Assistant) are not available.
 
 ## What is in this repository
 
@@ -20,10 +20,13 @@ Built files only. There is no plugin source code here.
 
 | Path | Contents |
 | --- | --- |
-| `dist/` | The production build of the free plugin's editor (JS, CSS, fonts) |
-| `assets/` | Static assets shipped with the free plugin (icons, images, template data) |
+| `dist/` | The production build of the plugin's editor (JS, CSS, fonts) |
+| `pro/` | The production build of the Pro add-on |
+| `assets/` | Static assets shipped with the plugin (icons, images, template data) |
 | `demo/boot.js` | The bootstrap that stands in for WordPress |
+| `demo/showcase.json` | The showcase table, in the plugin's saved format |
 | `demo/patterns.json` | The template list the "Add New" page reads |
+| `demo/img/` | Illustrations used by the showcase table |
 | `index.html` | The page that loads it all |
 
 ## License

@@ -5,14 +5,17 @@
  * This file stands in for WordPress: it provides the config object the editor
  * reads, a minimal `wp.i18n`, and answers every REST request in the browser
  * through the editor's own `WPTB_HTTP_HOOK`. Nothing is sent to a server and
- * nothing is stored: a reload starts from the sample table again.
+ * nothing is stored: a reload starts from the sample tables again.
  */
 (function () {
   "use strict";
 
   var BASE = new URL(".", window.location.href).href.replace(/\/$/, "");
-  var SAMPLE_PATTERN = "employee-table";
+  var CANONICAL = "https://protibimbok.github.io/wptb-preview";
+  var SHOWCASE = "/demo/showcase.json";
+  var EMPLOYEE = "/assets/patterns/free/employee-table.json";
   var DEMO_NOTE = " (preview: changes stay in this tab)";
+  var AI_NOTE = "The AI Assistant needs a WordPress site and an API key, so it is switched off in this preview.";
 
   // Open straight into the builder with the sample table.
   var params = new URLSearchParams(window.location.search);
@@ -32,7 +35,7 @@
     WEB_URL: BASE,
     PLUGIN_URL: BASE,
     HOME_URL: BASE,
-    IS_PRO: false,
+    IS_PRO: true,
     FONT_FAMILIES: [],
     SETTINGS: {
       is_authorized: true,
@@ -54,6 +57,7 @@
       },
       table_style: "",
       lazy_load: { enabled: false },
+      ai: { vendors: {} },
     },
     NONCE: { wp_rest: "preview" },
   };
@@ -66,10 +70,12 @@
     });
   };
 
+  // `source` is the file a table's saved markup is read from.
   var tables = [
-    { id: 1, title: "Employee Table", date: now(), modified: now(), is_template: false, status: "draft" },
+    { id: 1, title: "Element showcase", source: SHOWCASE, date: now(), modified: now(), is_template: false, status: "draft" },
+    { id: 2, title: "Employee Table", source: EMPLOYEE, date: now(), modified: now(), is_template: false, status: "draft" },
   ];
-  var nextId = 2;
+  var nextId = 3;
   var tags = {};
   var nextTagId = 1;
   var patternCache = {};
@@ -150,7 +156,7 @@
       if (kind === "delete") tables.splice(tables.indexOf(t), 1);
       if (kind === "duplicate") {
         tables.push({
-          id: nextId++, title: t.title + " (copy)", date: now(), modified: now(),
+          id: nextId++, title: t.title + " (copy)", source: t.source, date: now(), modified: now(),
           is_template: t.is_template, status: "draft",
         });
       }
@@ -168,22 +174,27 @@
       if (path === "/table") {
         var t = findTable(q.get("id"));
         if (!t) return json({ message: "Table not found." }, 404);
-        return loadJson("/assets/patterns/free/" + SAMPLE_PATTERN + ".json").then(function (p) {
-          return json({ table: p.content, name: t.title, tags: [], is_template: t.is_template });
+        return loadJson(t.source).then(function (p) {
+          // The sample markup points at the published copy; serve its files from wherever this runs.
+          var table = p.content.split(CANONICAL).join(BASE);
+          return json({ table: table, name: t.title, tags: [], is_template: t.is_template });
         });
       }
       if (path === "/tables") return json(listTables(q));
       if (path === "/patterns") {
         var name = (q.get("name") || "").replace(/[^a-z0-9-_]/gi, "");
         if (name) {
-          return loadJson("/assets/patterns/free/" + name + ".json").then(
-            function (p) { return json({ pattern: p }); },
-            function () { return json({ error: "Pattern was not found" }); }
-          );
+          return loadJson("/assets/patterns/free/" + name + ".json")
+            .catch(function () { return loadJson("/assets/patterns/pro/" + name + ".json"); })
+            .then(
+              function (p) { return json({ pattern: p }); },
+              function () { return json({ error: "Pattern was not found" }); }
+            );
         }
         return loadJson("/demo/patterns.json").then(json);
       }
       if (path === "/tags") return json({ tags: tags });
+      if (path.indexOf("/ai/") === 0) return json({ message: AI_NOTE, chats: [], messages: [] });
       return json({ message: "Not available in the preview." }, 404);
     }
 
@@ -195,7 +206,7 @@
         return json({ id: String(existing.id), message: "Table saved" + DEMO_NOTE, is_new: false });
       }
       var created = {
-        id: nextId++, title: body.title || "Untitled table", date: now(), modified: now(),
+        id: nextId++, title: body.title || "Untitled table", source: SHOWCASE, date: now(), modified: now(),
         is_template: !!body.prebuilt, status: "draft",
       };
       tables.push(created);
@@ -209,6 +220,7 @@
     if (/^\/(duplicate|trash|restore|delete)(_bulk)?$/.test(path)) {
       return tableAction(path.slice(1), body);
     }
+    if (path.indexOf("/ai/") === 0) return json({ message: AI_NOTE, error: AI_NOTE }, 400);
     if (path === "/settings") {
       return json({ message: "Settings are read-only in the preview.", success: true });
     }
