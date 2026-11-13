@@ -28,7 +28,7 @@ Built files only. There is no plugin source code here.
 | `demo/patterns.json` | The template list the "Add New" page reads |
 | `demo/img/` | Illustrations used by the showcase table |
 | `index.html` | The page that loads it all |
-| `scripts/` | The build script |
+| `scripts/` | The build and local preview scripts |
 
 ## Rebuilding
 
@@ -38,6 +38,7 @@ The built files come from a local checkout of the plugin's monorepo.
 pnpm install
 pnpm build              # builds the free + Pro editors in the monorepo, then copies them here
 pnpm build:copy         # copies the monorepo's existing build without rebuilding
+pnpm preview            # serves the preview at http://localhost:4173 (--port to change)
 ```
 
 The first run asks for the monorepo path and saves it in `.dir` (git-ignored). Delete `.dir` to be asked again.

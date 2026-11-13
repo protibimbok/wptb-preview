@@ -8,6 +8,7 @@
   "scripts": {
     "build": "node scripts/build.ts",
     "build:copy": "node scripts/build.ts --skip-build",
+    "preview": "node scripts/preview.ts",
     "typecheck": "tsc --noEmit"
   },
   "packageManager": "pnpm@11.1.0",
