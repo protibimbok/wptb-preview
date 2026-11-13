@@ -39,7 +39,7 @@
     FONT_FAMILIES: [],
     SETTINGS: {
       is_authorized: true,
-      version: "2.3.0",
+      version: "2.3.1",
       all_roles: {
         administrator: { name: "Administrator", capabilities: [] },
         editor: { name: "Editor", capabilities: [] },
