@@ -1,0 +1,18 @@
+{
+  "name": "wptb-preview",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Standalone in-browser preview of the WP Table Builder editor",
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.ts",
+    "build:copy": "node scripts/build.ts --skip-build",
+    "typecheck": "tsc --noEmit"
+  },
+  "packageManager": "pnpm@11.1.0",
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "typescript": "^7.0.2"
+  }
+}

@@ -28,6 +28,21 @@ Built files only. There is no plugin source code here.
 | `demo/patterns.json` | The template list the "Add New" page reads |
 | `demo/img/` | Illustrations used by the showcase table |
 | `index.html` | The page that loads it all |
+| `scripts/` | The build script |
+
+## Rebuilding
+
+The built files come from a local checkout of the plugin's monorepo.
+
+```sh
+pnpm install
+pnpm build              # builds the free + Pro editors in the monorepo, then copies them here
+pnpm build:copy         # copies the monorepo's existing build without rebuilding
+```
+
+The first run asks for the monorepo path and saves it in `.dir` (git-ignored). Delete `.dir` to be asked again.
+
+The script replaces `dist/`, `pro/` and `assets/`, and regenerates `demo/patterns.json` and `index.html` with the new hashed file names. It also updates the version in `demo/boot.js`.
 
 ## License
 
